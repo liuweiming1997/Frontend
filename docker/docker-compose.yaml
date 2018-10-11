@@ -1,0 +1,9 @@
+version: '3'
+services:
+  main:
+    build:
+      context: ..
+      dockerfile: docker/server.Dockerfile
+    ports:
+      - "8080:8080"
+    restart: always
