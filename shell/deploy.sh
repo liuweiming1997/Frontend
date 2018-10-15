@@ -1,5 +1,5 @@
 #!/bin/bash
-container_name=(main db)
+container_name=(nginx, main)
 server_address=95.163.202.160
 project_name="Frontend"
 
