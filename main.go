@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"time"
 )
 
 const (
@@ -55,29 +54,21 @@ func saveImage(w http.ResponseWriter, r *http.Request) {
 	io.Copy(saveFile, uploadFile)
 	defer uploadFile.Close()
 	defer saveFile.Close()
-	r.AddCookie(&http.Cookie{
-		Name:    "fileName",
-		Value:   handle.Filename,
-		Expires: time.Now().Add(24 * time.Hour),
-	})
+
 	// must set it to response, and use in next request
-	http.SetCookie(w, &http.Cookie{
-		Name:    "fileName",
-		Value:   handle.Filename,
-		Expires: time.Now().Add(24 * time.Second),
-	})
-	http.Redirect(w, r, "/showImage", http.StatusFound)
+	// http.SetCookie(w, &http.Cookie{
+	// 	Name:    "fileName",
+	// 	Value:   handle.Filename,
+	// 	Expires: time.Now().Add(24 * time.Second),
+	// })
+	http.Redirect(w, r, "/showImage?fileName="+handle.Filename, http.StatusFound)
 }
 
 func showImage(w http.ResponseWriter, r *http.Request) {
 	inWhereAndThenShowCookies("in showImage", r)
 	r.ParseForm()
-	fileName, err := r.Cookie("fileName")
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	file, err := os.Open(savePath + fileName.Value)
+	fileName := r.URL.Query().Get("fileName")
+	file, err := os.Open(savePath + fileName)
 	if err != nil {
 		log.Println(err)
 		return
