@@ -32,8 +32,9 @@ func inWhereAndThenShowCookies(name string, r *http.Request) {
 
 func root(w http.ResponseWriter, r *http.Request) {
 	inWhereAndThenShowCookies("in root", r)
-	r.ParseForm()            //解析参数，默认是不会解析的
-	fmt.Fprintf(w, rootPage) //这个写入到w的是输出到客户端的
+	w.Header().Add("Access-Control-Allow-Origin", "*") //设置跨域
+	r.ParseForm()                                      //解析参数，默认是不会解析的
+	fmt.Fprintf(w, rootPage)                           //这个写入到w的是输出到客户端的
 }
 
 func saveImage(w http.ResponseWriter, r *http.Request) {
